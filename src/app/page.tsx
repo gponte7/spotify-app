@@ -75,7 +75,7 @@ export default function Home() {
     fetch('https://accounts.spotify.com/api/token', authParameters)
       .then((response) => response.json())
       .then((data) => setAccessToken(data.access_token))
-  }, [])
+  }, [CLIENT_ID, CLIENT_SECRET])
 
   return (
     <div>
