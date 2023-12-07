@@ -3,7 +3,6 @@
 import { AlbumCard } from '@/components/AlbumCard/albumCard'
 import { Loading } from '@/components/AlbumCard/loading'
 import { Spinner } from '@/components/Spinner'
-import { env } from '@/env'
 import { SpotifyLogo } from '@phosphor-icons/react/dist/ssr/SpotifyLogo'
 import { useEffect, useState } from 'react'
 
@@ -24,6 +23,9 @@ export default function Home() {
   const [accessToken, setAccessToken] = useState('')
   const [albums, setAlbums] = useState<AlbumProps[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID
+  const CLIENT_SECRET = process.env.NEXT_PUBLIC_CLIENT_SECRET
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -67,7 +69,7 @@ export default function Home() {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: `grant_type=client_credentials&client_id=${env.NEXT_PUBLIC_CLIENT_ID}&client_secret=${env.NEXT_PUBLIC_CLIENT_SECRET}`,
+      body: `grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}`,
     }
 
     fetch('https://accounts.spotify.com/api/token', authParameters)
