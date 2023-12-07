@@ -6,6 +6,9 @@ import { Spinner } from '@/components/Spinner'
 import { SpotifyLogo } from '@phosphor-icons/react/dist/ssr/SpotifyLogo'
 import { useEffect, useState } from 'react'
 
+const CLIENT_ID = 'afdd1723c5d44aeeb9e814c9c0d976c2'
+const CLIENT_SECRET = '0e77cc2ca5af4f2983fb0fcd67e12e29'
+
 interface AlbumImagesProps {
   url: string
 }
@@ -23,9 +26,6 @@ export default function Home() {
   const [accessToken, setAccessToken] = useState('')
   const [albums, setAlbums] = useState<AlbumProps[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID
-  const CLIENT_SECRET = process.env.NEXT_PUBLIC_CLIENT_SECRET
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
