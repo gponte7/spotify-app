@@ -6,9 +6,6 @@ import { Spinner } from '@/components/Spinner'
 import { SpotifyLogo } from '@phosphor-icons/react/dist/ssr/SpotifyLogo'
 import { useEffect, useState } from 'react'
 
-const CLIENT_ID = 'afdd1723c5d44aeeb9e814c9c0d976c2'
-const CLIENT_SECRET = '0e77cc2ca5af4f2983fb0fcd67e12e29'
-
 interface AlbumImagesProps {
   url: string
 }
@@ -26,10 +23,12 @@ export default function Home() {
   const [accessToken, setAccessToken] = useState('')
   const [albums, setAlbums] = useState<AlbumProps[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setIsSubmitting(true)
+    setErrorMessage('')
 
     const searchInput = e.currentTarget.artist.value
 
@@ -41,26 +40,35 @@ export default function Home() {
       },
     }
 
-    const artistID = await fetch(
-      `https://api.spotify.com/v1/search?q=${searchInput}&type=artist`,
-      searchParameters,
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        return data.artists.items[0].id
-      })
+    try {
+      const artistID = await fetch(
+        `https://api.spotify.com/v1/search?q=${searchInput}&type=artist`,
+        searchParameters,
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          return data.artists.items[0].id
+        })
 
-    await fetch(
-      `https://api.spotify.com/v1/artists/${artistID}/albums?include_groups=album&market=US&limit=50`,
-      searchParameters,
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setTimeout(() => {
-          setAlbums(data.items)
-          setIsSubmitting(false)
-        }, 2000)
-      })
+      await fetch(
+        `https://api.spotify.com/v1/artists/${artistID}/albums?include_groups=album&market=US&limit=50`,
+        searchParameters,
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setTimeout(() => {
+            setAlbums(data.items)
+            setIsSubmitting(false)
+          }, 2000)
+        })
+    } catch (error) {
+      console.log(error)
+      setTimeout(() => {
+        setAlbums([])
+        setIsSubmitting(false)
+        setErrorMessage('Artista não encontrado.')
+      }, 2000)
+    }
   }
 
   useEffect(() => {
@@ -69,7 +77,7 @@ export default function Home() {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: `grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}`,
+      body: `grant_type=client_credentials&client_id=${process.env.NEXT_PUBLIC_CLIENT_ID}&client_secret=${process.env.NEXT_PUBLIC_CLIENT_SEC}`,
     }
 
     fetch('https://accounts.spotify.com/api/token', authParameters)
@@ -114,6 +122,11 @@ export default function Home() {
             </button>
           </form>
         </div>
+        {errorMessage && (
+          <div className="mt-4 flex flex-1 items-center justify-center bg-zinc-800 p-2 rounded-lg">
+            <span className="text-zinc-100 text-sm">{errorMessage}</span>
+          </div>
+        )}
 
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-10">
           {isSubmitting ? (
