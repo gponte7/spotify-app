@@ -65,7 +65,6 @@ export default function Home() {
           }, 2000)
         })
     } catch (error) {
-      console.log(error)
       setTimeout(() => {
         setAlbums([])
         setIsSubmitting(false)
