@@ -62,7 +62,6 @@ export default function Home() {
           }, 2000)
         })
     } catch (error) {
-      console.log(error)
       setTimeout(() => {
         setAlbums([])
         setIsSubmitting(false)
@@ -77,7 +76,7 @@ export default function Home() {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: `grant_type=client_credentials&client_id=${process.env.NEXT_PUBLIC_CLIENT_ID}&client_secret=${process.env.NEXT_PUBLIC_CLIENT_SEC}`,
+      body: `grant_type=client_credentials&client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SEC}`,
     }
 
     fetch('https://accounts.spotify.com/api/token', authParameters)
