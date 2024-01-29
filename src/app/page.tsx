@@ -33,7 +33,8 @@ export default function Home() {
     setIsSubmitting(true)
     setErrorMessage('')
 
-    const searchInput = e.currentTarget.artist.value
+    const searchInput = String(e.currentTarget.artist.value).toLocaleLowerCase()
+    e.currentTarget.reset()
 
     const searchParameters = {
       method: 'GET',
@@ -106,6 +107,7 @@ export default function Home() {
           <form
             className="w-full grid grid-cols-1 md:flex items-center justify-center gap-6"
             onSubmit={handleSubmit}
+            id="myForm"
           >
             <input
               type="text"
